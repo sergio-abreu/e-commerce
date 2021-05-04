@@ -130,7 +130,7 @@ desde o início.
 
 Para este desafio não será abordado mensageria, pois não terá função para adicionar produtos, nem usuários.
 Cada contexto terá um banco de dados próprio apenas com as informações que ele utilizará.
-Será criado apenas um serviço que irá conter os 2 contextos que estão em azul na imagem.
+Será criado apenas um repositório com os 3 contextos que estão em azul na imagem.
 O contexto de identidade foi omitido, pois o foco principal está no contexto de desconto e este
 armazerá as informações de identidade necessárias para seu funcionamento, id e data de nascimento,
-assim como as informações do produto, id e preço. Este serviço será desenvolvido em GoLang.
+assim como as informações do produto, id e preço. Estes serviços serão desenvolvidos em GoLang.
