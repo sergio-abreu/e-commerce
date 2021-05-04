@@ -55,7 +55,7 @@ mesmo questionamentos que o primeiro serviço.
 A primeira impressão desse serviço é que ele seria um BFF, onde ele traria as 
 requisições formatadas para o front consumir. 
 
-![img_2.png](docs/bff.png)
+![img_2.png](_docs/bff.png)
 
 A imagem acima já está considerando um contexto separado para produto, desconto e usuário,
 por causa da terceira restrição: `É preciso ter a lista de produtos e para cada produto 
@@ -77,7 +77,7 @@ das operações de shopping que o cliente pode fazer (buscar produtos, criar not
 para produto fora de estoque, adicionar produto no carrinho, fazer o pagamento dos 
 produtos do carrinho, etc.)
 
-![img_1.png](docs/ecommerce.png)
+![img_1.png](_docs/ecommerce.png)
 
 Depois de contextualizar todo o sistema, é hora de escolher que arquitetura implementar.
 
@@ -126,7 +126,7 @@ que estão interessados. Caso um microserviço precise adicionar uma informaçã
 ouvia, mas já era propagada pela mensageria ele deverá ouvir todos os eventos já propagados
 desde o início.
 
-![img_4.png](docs/architecture.png)
+![img_4.png](_docs/architecture.png)
 
 Para este desafio não será abordado mensageria, pois não terá função para adicionar produtos, nem usuários.
 Cada contexto terá um banco de dados próprio apenas com as informações que ele utilizará.
