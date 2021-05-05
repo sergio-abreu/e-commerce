@@ -8,6 +8,10 @@ import (
 
 var ErrProductNotFound = errors.New("product not found")
 
+func NewSqlRepository(db *sql.DB) *Repository {
+	return &Repository{db: db}
+}
+
 type Repository struct {
 	db *sql.DB
 }
