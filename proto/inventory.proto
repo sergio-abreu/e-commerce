@@ -1,0 +1,17 @@
+syntax = "proto3";
+message Void{}
+
+service Inventory {
+  rpc GetAllProducts(Void) returns (Products) {}
+}
+
+message Product {
+  string id = 1;
+  int32 price_in_cents = 2;
+  string title = 3;
+  string description = 4;
+}
+
+message Products {
+  repeated Product products = 1;
+}
