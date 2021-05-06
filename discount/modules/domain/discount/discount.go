@@ -6,6 +6,10 @@ func NewDiscount(valueInCents int, maxPercentage Percentage) Discount {
 
 type Percentage float64
 
+func (p Percentage) Float64() float64 {
+	return float64(p)
+}
+
 const Percent Percentage = 0.01
 
 type Discount struct {

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+service DiscountCalculator {
+  rpc CalculateUsersDiscountForProduct(RequestForDiscount) returns (Discount) {}
+}
+
+message RequestForDiscount {
+  string user_id = 1;
+  string product_id = 2;
+}
+
+message Discount {
+  double percentage = 1;
+  int32 value_in_cents = 2;
+}
