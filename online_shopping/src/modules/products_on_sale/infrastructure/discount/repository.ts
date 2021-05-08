@@ -11,11 +11,14 @@ export default class GRpcRepository implements Repository {
         this.client = new DiscountCalculatorClient(address, credentials.createInsecure())
     }
 
-    getUserDiscountsForProduct(user_id: string, product_id: string): Promise<Discount> {
+    getUserDiscountsForProduct(userId: string, productId: string): Promise<Discount> {
         return new Promise<Discount>((resolve, reject) => {
+            if (userId == undefined || userId == "" || productId == undefined || productId == "") {
+                return resolve({valueInCents: 0, percentage: 0})
+            }
             const requestForDiscount = new RequestForDiscount();
-            requestForDiscount.setUserId(user_id)
-            requestForDiscount.setProductId(product_id)
+            requestForDiscount.setUserId(userId)
+            requestForDiscount.setProductId(productId)
             this.client.calculateUsersDiscountForProduct(requestForDiscount, new Metadata(), {}, (err, discount) => {
                 if (err) {
                     return reject(err)
