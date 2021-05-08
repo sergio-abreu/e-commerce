@@ -20,7 +20,7 @@ func Load(config Config) (*Application, error) {
 	userRepository := user.NewSqlRepository(db)
 	productRepository := product.NewSqlRepository(db)
 	discount_calculator.RegisterDiscountCalculatorServer(s, calculator.NewCalculator(userRepository, productRepository))
-	return &Application{s: s, address: config.Address}, nil
+	return &Application{s: s, address: config.RpcAddress}, nil
 }
 
 type Application struct {

@@ -2,8 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/micro/go-micro/config"
-	"github.com/micro/go-micro/config/source/file"
+	env "github.com/Netflix/go-env"
 	"github.com/pkg/errors"
 	"github.com/sergio-vaz-abreu/discount/application"
 	"github.com/sirupsen/logrus"
@@ -13,23 +12,14 @@ import (
 )
 
 func main() {
-	var filename string
 	app := cli.NewApp()
 	app.Name = ApplicationName
 	app.Description = "An discount application for an ecommerce system"
 	app.Version = Version + "(" + GitCommit + ")"
 	app.EnableBashCompletion = true
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:        "config, c",
-			Usage:       "Configuration file",
-			Value:       "config.json",
-			Destination: &filename,
-		},
-	}
 	app.Action = func(cliCtx *cli.Context) error {
 		var applicationConfig application.Config
-		err := loadFile(filename, &applicationConfig)
+		err := loadConfig(&applicationConfig)
 		if err != nil {
 			return err
 		}
@@ -70,12 +60,7 @@ func gracefullyShutdown() context.Context {
 	return ctx
 }
 
-func loadFile(filename string, data interface{}) error {
-	if err := config.Load(file.NewSource(
-		file.WithPath(filename),
-	)); err != nil {
-		return errors.Wrap(err, "failed to loading file")
-	}
-	err := config.Scan(&data)
-	return errors.Wrap(err, "failed parsing data from file")
+func loadConfig(data interface{}) error {
+	_, err := env.UnmarshalFromEnviron(data)
+	return errors.Wrap(err, "failed to get config from environment")
 }

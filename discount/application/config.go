@@ -4,5 +4,5 @@ import "github.com/sergio-vaz-abreu/discount/infrastructure/postgres"
 
 type Config struct {
 	PostgresConfig postgres.Config
-	Address        string
+	RpcAddress     string `env:"RPC_ADDRESS"`
 }

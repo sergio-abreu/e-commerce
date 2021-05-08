@@ -57,6 +57,6 @@ func GetConfig(address string) Config {
 			Port:     5433,
 			Database: "discount",
 		},
-		Address: address,
+		RpcAddress: address,
 	}
 }
