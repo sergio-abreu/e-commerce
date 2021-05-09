@@ -11,7 +11,7 @@ import (
 func TestEwallet(t *testing.T) {
 	g := NewGomegaWithT(t)
 	t.Run("Getting products", func(t *testing.T) {
-		httpResponse, err := http.Get("http://localhost:8080/products")
+		httpResponse, err := http.Get("http://localhost:50053/products")
 		g.Expect(err).Should(
 			Not(HaveOccurred()))
 		g.Expect(httpResponse).Should(

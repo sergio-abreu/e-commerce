@@ -1,34 +1,34 @@
-version: "3.7"
+version: "2.4"
 services:
   postgres_inventory:
     image: postgres:13
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U inventory"]
-      interval: 30s
+      interval: 5s
       timeout: 10s
-      retries: 5
+      retries: 15
     environment:
       POSTGRES_DB: inventory
       POSTGRES_USER: inventory
       POSTGRES_PASSWORD: P@ssword
     volumes:
-      - ./.docker/postgres_inventory/data:/var/lib/postgresql/data
+      - ../.docker/ewallet-integration-test/postgres_inventory/data:/var/lib/postgresql/data
 
   postgres_discount:
     image: postgres:13
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U discount"]
-      interval: 30s
+      interval: 5s
       timeout: 10s
-      retries: 5
+      retries: 15
     environment:
       POSTGRES_DB: discount
       POSTGRES_USER: discount
       POSTGRES_PASSWORD: P@ssword
     volumes:
-      - ./.docker/postgres_discount/data:/var/lib/postgresql/data
+      - ../.docker/ewallet-integration-test/postgres_discount/data:/var/lib/postgresql/data
 
   postgres_inventory_migration:
     image: migrate/migrate:v4.14.1
@@ -81,12 +81,24 @@ services:
   online_shopping:
     image: online_shopping:1.0.0
     restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -Is online_shopping:8080" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
     depends_on:
       - discount
       - inventory
     ports:
-      - "8080:8080"
+      - "50053:8080"
     environment:
       INVENTORY_ADDR: inventory:50052
       DISCOUNT_CALCULATOR_ADDR: discount:50051
       WEB_SERVER_PORT: 8080
+
+  busybox:
+    image: busybox
+    restart: on-failure
+    depends_on:
+      online_shopping:
+        condition: service_healthy

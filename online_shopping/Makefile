@@ -1,5 +1,5 @@
-APPLICATION_NAME := $(shell grep "name\": " package.json | sed -E 's/.*"(.+)"$$/\1/')
-BASE_VERSION := $(shell grep "version\": " package.json | sed -E 's/.*"(.+)"$$/\1/')
+APPLICATION_NAME := $(shell grep "name\": " package.json | sed -E 's/.*:\s*"(.+)",$$/\1/')
+BASE_VERSION := $(shell grep "version\": " package.json | sed -E 's/.*:\s*"(.+)",$$/\1/')
 
 # HELP
 # This will output the help for each task
@@ -18,4 +18,4 @@ get-deps: ## Install projects dependencies with Go Module
 	yarn
 
 docker-build: ## Build docker image
-	docker build -t ${APPLICATION_NAME}:${BASE_VERSION} ./
+	test "${shell docker images -q ${APPLICATION_NAME}:${BASE_VERSION}}" != "" || docker build -t ${APPLICATION_NAME}:${BASE_VERSION} ./

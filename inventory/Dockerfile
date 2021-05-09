@@ -2,7 +2,8 @@ FROM golang:1.16-alpine AS build
 RUN apk add --update alpine-sdk
 WORKDIR /src
 COPY . .
-RUN make build
+RUN go mod vendor
+RUN go build -o .bin/inventory ./
 
 FROM alpine
 COPY --from=build /src/.bin /

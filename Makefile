@@ -29,3 +29,8 @@ test-discount: ## Run discount tests
 
 test-integration: build-images ## Run integration tests
 	cd ewallet-integration-test && make test
+
+clean: ## Stop all containers
+	cd inventory && docker-compose stop
+	cd discount && docker-compose stop
+	cd ewallet-integration-test && docker-compose stop
