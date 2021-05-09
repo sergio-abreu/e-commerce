@@ -39,7 +39,7 @@ func GetCalculator() (*Calculator, error) {
 		User:     "discount",
 		Password: "P@ssword",
 		Host:     "127.0.0.1",
-		Port:     5433,
+		Port:     15432,
 		Database: "discount",
 	})
 	if err != nil {

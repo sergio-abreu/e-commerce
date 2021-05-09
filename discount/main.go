@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	env "github.com/Netflix/go-env"
-	"github.com/pkg/errors"
 	"github.com/sergio-vaz-abreu/discount/application"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -18,8 +16,7 @@ func main() {
 	app.Version = Version + "(" + GitCommit + ")"
 	app.EnableBashCompletion = true
 	app.Action = func(cliCtx *cli.Context) error {
-		var applicationConfig application.Config
-		err := loadConfig(&applicationConfig)
+		applicationConfig, err := application.LoadConfigFromEnv()
 		if err != nil {
 			return err
 		}
@@ -58,9 +55,4 @@ func gracefullyShutdown() context.Context {
 		cancel()
 	}()
 	return ctx
-}
-
-func loadConfig(data interface{}) error {
-	_, err := env.UnmarshalFromEnviron(data)
-	return errors.Wrap(err, "failed to get config from environment")
 }
