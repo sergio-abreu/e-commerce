@@ -2,9 +2,6 @@ package main
 
 import (
 	"context"
-	"github.com/micro/go-micro/config"
-	"github.com/micro/go-micro/config/source/file"
-	"github.com/pkg/errors"
 	"github.com/sergio-vaz-abreu/inventory/application"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -13,23 +10,13 @@ import (
 )
 
 func main() {
-	var filename string
 	app := cli.NewApp()
 	app.Name = ApplicationName
 	app.Description = "An inventory application for an ecommerce system"
 	app.Version = Version + "(" + GitCommit + ")"
 	app.EnableBashCompletion = true
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:        "config, c",
-			Usage:       "Configuration file",
-			Value:       "config.json",
-			Destination: &filename,
-		},
-	}
 	app.Action = func(cliCtx *cli.Context) error {
-		var applicationConfig application.Config
-		err := loadFile(filename, &applicationConfig)
+		applicationConfig, err := application.LoadConfigFromEnv()
 		if err != nil {
 			return err
 		}
@@ -68,14 +55,4 @@ func gracefullyShutdown() context.Context {
 		cancel()
 	}()
 	return ctx
-}
-
-func loadFile(filename string, data interface{}) error {
-	if err := config.Load(file.NewSource(
-		file.WithPath(filename),
-	)); err != nil {
-		return errors.Wrap(err, "failed to loading file")
-	}
-	err := config.Scan(&data)
-	return errors.Wrap(err, "failed parsing data from file")
 }

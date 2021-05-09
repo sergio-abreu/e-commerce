@@ -5,5 +5,5 @@ COPY . .
 RUN make build
 
 FROM alpine
-COPY --from=build /src/.bin/ /
-ENTRYPOINT ["/discount"]
+COPY --from=build /src/.bin /
+ENTRYPOINT ["/inventory"]

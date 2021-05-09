@@ -3,7 +3,7 @@ services:
   postgres:
     image: postgres:13
     ports:
-      - "5432:5432"
+      - "25432:5432"
     restart: always
     environment:
       POSTGRES_DB: inventory
@@ -11,3 +11,10 @@ services:
       POSTGRES_PASSWORD: P@ssword
     volumes:
       - ./.docker/postgres/data:/var/lib/postgresql/data
+
+  migration:
+    image: migrate/migrate:v4.14.1
+    command: [ "-path=/migrations", "-database=postgres://inventory:P@ssword@postgres:5432/inventory?sslmode=disable", "up"]
+    restart: on-failure
+    volumes:
+      - ./infrastructure/migrations:/migrations

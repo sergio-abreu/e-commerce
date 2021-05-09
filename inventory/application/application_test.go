@@ -49,9 +49,9 @@ func GetConfig(address string) Config {
 			User:     "inventory",
 			Password: "P@ssword",
 			Host:     "127.0.0.1",
-			Port:     5432,
+			Port:     25432,
 			Database: "inventory",
 		},
-		Address: address,
+		RpcAddress: address,
 	}
 }

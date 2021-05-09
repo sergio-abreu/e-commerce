@@ -3,6 +3,7 @@ module github.com/sergio-vaz-abreu/inventory
 go 1.16
 
 require (
+	github.com/Netflix/go-env v0.0.0-20210215222557-e437a7e7f9fb
 	github.com/lib/pq v1.2.0
 	github.com/micro/go-micro v1.18.0
 	github.com/onsi/gomega v1.4.3

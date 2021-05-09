@@ -18,7 +18,7 @@ func Load(config Config) (*Application, error) {
 	}
 	productRepository := product.NewSqlRepository(db)
 	inventory.RegisterInventoryServer(s, application.NewInventory(productRepository))
-	return &Application{s: s, address: config.Address}, nil
+	return &Application{s: s, address: config.RpcAddress}, nil
 }
 
 type Application struct {
