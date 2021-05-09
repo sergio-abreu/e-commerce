@@ -20,7 +20,6 @@ default: help
 
 get-deps: ## Install projects dependencies with Go Module
 	@echo "Getting dependencies"
-	go mod tidy
 	go mod vendor
 
 build: get-deps ## Build project for native production
@@ -30,7 +29,8 @@ build: get-deps ## Build project for native production
 docker-build: build ## Build docker image
 	docker build -t ${APPLICATION_NAME}:${BASE_VERSION} ./
 
-test: ## Run project tests
+test: get-deps ## Run project tests
 	@echo "Running tests"
+	docker-compose up -d --quiet-pull
 	mkdir -p ./.test/cover
 	go test -race -coverpkg= ./... -coverprofile=./.test/cover/cover.out -v

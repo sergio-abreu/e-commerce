@@ -3,6 +3,11 @@ services:
   postgres_inventory:
     image: postgres:13
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventory"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     environment:
       POSTGRES_DB: inventory
       POSTGRES_USER: inventory
@@ -13,6 +18,11 @@ services:
   postgres_discount:
     image: postgres:13
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U discount"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     environment:
       POSTGRES_DB: discount
       POSTGRES_USER: discount
@@ -24,6 +34,9 @@ services:
     image: migrate/migrate:v4.14.1
     command: ["-path=/migrations", "-database=postgres://inventory:P@ssword@postgres_inventory:5432/inventory?sslmode=disable", "up"]
     restart: on-failure
+    depends_on:
+      postgres_inventory:
+        condition: service_healthy
     volumes:
       - ../inventory/infrastructure/migrations:/migrations
 
@@ -31,12 +44,18 @@ services:
     image: migrate/migrate:v4.14.1
     command: ["-path=/migrations", "-database=postgres://discount:P@ssword@postgres_discount:5432/discount?sslmode=disable", "up"]
     restart: on-failure
+    depends_on:
+      postgres_discount:
+        condition: service_healthy
     volumes:
       - ../discount/infrastructure/migrations:/migrations
 
   inventory:
     image: inventory:1.0.0
     restart: always
+    depends_on:
+      postgres_inventory:
+        condition: service_healthy
     environment:
       RPC_ADDRESS: :50052
       DB_USER: inventory
@@ -48,6 +67,9 @@ services:
   discount:
     image: discount:1.0.0
     restart: always
+    depends_on:
+      postgres_discount:
+        condition: service_healthy
     environment:
       RPC_ADDRESS: :50051
       DB_USER: discount
@@ -59,6 +81,9 @@ services:
   online_shopping:
     image: online_shopping:1.0.0
     restart: always
+    depends_on:
+      - discount
+      - inventory
     ports:
       - "8080:8080"
     environment:

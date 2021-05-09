@@ -5,6 +5,11 @@ services:
     ports:
       - "25432:5432"
     restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U inventory" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     environment:
       POSTGRES_DB: inventory
       POSTGRES_USER: inventory
@@ -16,5 +21,8 @@ services:
     image: migrate/migrate:v4.14.1
     command: [ "-path=/migrations", "-database=postgres://inventory:P@ssword@postgres:5432/inventory?sslmode=disable", "up"]
     restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
     volumes:
       - ./infrastructure/migrations:/migrations
