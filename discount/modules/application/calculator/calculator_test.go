@@ -1,6 +1,7 @@
 package calculator
 
 import (
+	"context"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"
 	"github.com/sergio-vaz-abreu/discount/infrastructure/postgres"
@@ -22,7 +23,7 @@ func TestCalculator(t *testing.T) {
 		g.Expect(err).Should(
 			Not(HaveOccurred()))
 
-		discount, err := sut.CalculateDiscount("11054c65-89dd-46a6-86ab-c603195100a5", "4151e87c-6a90-4f60-ae20-1643d5205fe3")
+		discount, err := sut.CalculateDiscount(context.Background(), "11054c65-89dd-46a6-86ab-c603195100a5", "4151e87c-6a90-4f60-ae20-1643d5205fe3")
 
 		g.Expect(err).Should(
 			Not(HaveOccurred()))

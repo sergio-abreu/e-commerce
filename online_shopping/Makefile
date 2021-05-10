@@ -18,4 +18,7 @@ get-deps: ## Install projects dependencies with Go Module
 	yarn
 
 docker-build: ## Build docker image
-	test "${shell docker images -q ${APPLICATION_NAME}:${BASE_VERSION}}" != "" || docker build -t ${APPLICATION_NAME}:${BASE_VERSION} ./
+	test "${shell docker images -q ${APPLICATION_NAME}:${BASE_VERSION}}" != "" || make docker-force-build
+
+docker-force-build: ## Build docker image
+	docker build -t ${APPLICATION_NAME}:${BASE_VERSION} ./

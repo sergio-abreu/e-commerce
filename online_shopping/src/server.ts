@@ -1,3 +1,5 @@
+var apm = require("elastic-apm-node").start();
+
 import Application from "./application/application";
 
 require('dotenv').config()

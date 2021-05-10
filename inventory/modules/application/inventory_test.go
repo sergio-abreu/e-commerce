@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"database/sql"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"
@@ -16,7 +17,7 @@ func TestInventory(t *testing.T) {
 		g.Expect(err).Should(
 			Not(HaveOccurred()))
 
-		products, err := sut.GetProducts()
+		products, err := sut.GetProducts(context.Background())
 
 		g.Expect(err).Should(
 			Not(HaveOccurred()))

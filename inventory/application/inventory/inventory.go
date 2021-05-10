@@ -5,6 +5,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sergio-vaz-abreu/inventory/application/inventory/proto"
 	"github.com/sergio-vaz-abreu/inventory/modules/application"
+	"github.com/sirupsen/logrus"
+	"go.elastic.co/apm"
 	"google.golang.org/grpc"
 )
 
@@ -17,9 +19,14 @@ type Inventory struct {
 	aInventory *application.Inventory
 }
 
-func (i *Inventory) GetAllProducts(_ context.Context, _ *proto.Void) (*proto.Products, error) {
-	products, err := i.aInventory.GetProducts()
+func (i *Inventory) GetAllProducts(ctx context.Context, _ *proto.Void) (*proto.Products, error) {
+	logger := logrus.WithContext(ctx)
+	span, ctx := apm.StartSpan(ctx, "GetAllProducts()", "runtime.inventory")
+	defer span.End()
+	products, err := i.aInventory.GetProducts(ctx)
 	if err != nil {
+		apm.CaptureError(ctx, err).Send()
+		logger.WithError(err).Error("failed to get products")
 		return nil, errors.Wrap(err, "failed to get products")
 	}
 	var protoProducts []*proto.Product
@@ -31,5 +38,6 @@ func (i *Inventory) GetAllProducts(_ context.Context, _ *proto.Void) (*proto.Pro
 			Description:  aProduct.Description,
 		})
 	}
+	logger.WithError(err).Error("successfully got products")
 	return &proto.Products{Products: protoProducts}, nil
 }

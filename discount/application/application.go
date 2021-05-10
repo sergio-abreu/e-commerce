@@ -7,12 +7,15 @@ import (
 	"github.com/sergio-vaz-abreu/discount/modules/application/calculator"
 	"github.com/sergio-vaz-abreu/discount/modules/infrastructure/product"
 	"github.com/sergio-vaz-abreu/discount/modules/infrastructure/user"
+	"go.elastic.co/apm/module/apmgrpc"
 	"google.golang.org/grpc"
 	"net"
 )
 
 func Load(config Config) (*Application, error) {
-	s := grpc.NewServer()
+	s := grpc.NewServer(
+		grpc.UnaryInterceptor(apmgrpc.NewUnaryServerInterceptor()),
+	)
 	db, err := postgres.NewDatabase(config.PostgresConfig)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to initialize postgres database")
