@@ -30,7 +30,14 @@ test-discount: ## Run discount tests
 test-integration: build-images ## Run integration tests
 	cd ewallet-integration-test && make test
 
+run: ## Run application
+	docker-compose up -d --quiet-pull
+	@echo "\nReady to accept request. Try the following command:\n"
+	@echo "curl -H 'Api-Key: c5b6e72c-5b04-4bd2-ba5e-c85a253191dc' http://127.0.0.1:50054/products?userId=11054c65-89dd-46a6-86ab-c603195100a5"
+	@echo ""
+
 clean: ## Stop all containers
 	cd inventory && docker-compose stop
 	cd discount && docker-compose stop
 	cd ewallet-integration-test && docker-compose stop
+	docker-compose stop

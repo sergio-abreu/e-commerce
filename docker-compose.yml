@@ -1,0 +1,139 @@
+version: "2.4"
+services:
+  elasticsearch:
+    image: elasticsearch:7.4.0
+    environment:
+      - discovery.type=single-node
+
+  kibana:
+    image: kibana:7.4.0
+    ports:
+      - 5601:5601
+    restart: always
+    depends_on:
+      - elasticsearch
+
+  apm-server:
+    image: elastic/apm-server:7.4.0
+    ports:
+      - 8200:8200
+    restart: always
+    command: --strict.perms=false -e  # -e flag to log to stderr and disable syslog/file output
+    depends_on:
+      - elasticsearch
+      - kibana
+
+  api-gateway:
+    image: quay.io/datawire/ambassador:0.72.0
+    ports:
+      - "50054:80"
+    restart: always
+    volumes:
+      - ./ambassador.yaml:/ambassador/ambassador-config/ambassador.yaml
+
+  postgres_inventory:
+    image: postgres:13
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventory"]
+      interval: 5s
+      timeout: 10s
+      retries: 15
+    environment:
+      POSTGRES_DB: inventory
+      POSTGRES_USER: inventory
+      POSTGRES_PASSWORD: P@ssword
+    volumes:
+      - ../.docker/e-commerce/postgres_inventory/data:/var/lib/postgresql/data
+
+  postgres_discount:
+    image: postgres:13
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U discount"]
+      interval: 5s
+      timeout: 10s
+      retries: 15
+    environment:
+      POSTGRES_DB: discount
+      POSTGRES_USER: discount
+      POSTGRES_PASSWORD: P@ssword
+    volumes:
+      - ../.docker/e-commerce/postgres_discount/data:/var/lib/postgresql/data
+
+  postgres_inventory_migration:
+    image: migrate/migrate:v4.14.1
+    command: ["-path=/migrations", "-database=postgres://inventory:P@ssword@postgres_inventory:5432/inventory?sslmode=disable", "up"]
+    restart: on-failure
+    depends_on:
+      postgres_inventory:
+        condition: service_healthy
+    volumes:
+      - ./inventory/infrastructure/migrations:/migrations
+
+  postgres_discount_migration:
+    image: migrate/migrate:v4.14.1
+    command: ["-path=/migrations", "-database=postgres://discount:P@ssword@postgres_discount:5432/discount?sslmode=disable", "up"]
+    restart: on-failure
+    depends_on:
+      postgres_discount:
+        condition: service_healthy
+    volumes:
+      - ./discount/infrastructure/migrations:/migrations
+
+  inventory:
+    image: inventory:1.0.0
+    restart: always
+    depends_on:
+      postgres_inventory:
+        condition: service_healthy
+    environment:
+      RPC_ADDRESS: :50052
+      DB_USER: inventory
+      DB_PASSWORD: P@ssword
+      DB_HOST: postgres_inventory
+      DB_PORT: 5432
+      DB_DATABASE: inventory
+      ELASTIC_APM_SERVICE_NAME: ewallet.inventory
+      ELASTIC_APM_SERVER_URL: http://apm-server:8200
+
+  discount:
+    image: discount:1.0.0
+    restart: always
+    depends_on:
+      postgres_discount:
+        condition: service_healthy
+    environment:
+      RPC_ADDRESS: :50051
+      DB_USER: discount
+      DB_PASSWORD: P@ssword
+      DB_HOST: postgres_discount
+      DB_PORT: 5432
+      DB_DATABASE: discount
+      ELASTIC_APM_SERVICE_NAME: ewallet.discount
+      ELASTIC_APM_SERVER_URL: http://apm-server:8200
+
+  online_shopping:
+    image: online_shopping:1.0.0
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -Is online_shopping:8080" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    depends_on:
+      - discount
+      - inventory
+    environment:
+      INVENTORY_ADDR: inventory:50052
+      DISCOUNT_CALCULATOR_ADDR: discount:50051
+      WEB_SERVER_PORT: 8080
+      ELASTIC_APM_SERVICE_NAME: ewallet.online_shopping
+      ELASTIC_APM_SERVER_URL: http://apm-server:8200
+
+  busybox:
+    image: busybox
+    restart: on-failure
+    depends_on:
+      online_shopping:
+        condition: service_healthy
