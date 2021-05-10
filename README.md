@@ -1,8 +1,53 @@
 # e-commerce
 
-## 1. Decisões
+## 1. Instalação
 
-Antes de começar, fiz uma reflexão sobre as restrições do desafio e pensei numa 
+### 1.1 Dependências
+* `sudo apt install build-essential`
+* `docker v20.10.2` https://docs.docker.com/engine/install/
+* `docker-compose v1.25.0` https://docs.docker.com/compose/install/
+* `golang v1.16` https://golang.org/dl/
+
+### 1.2 Testes
+Esse repositório está dividido em 3 contextos principais `discount`, `inventory` e `online_shopping`, 
+além das definições do protobuf `proto` e de teste de integração `ewallet-integration-test`.
+
+Para rodar os testes do contexto `discount`
+> `make test-discount`
+
+Para rodar os testes do contexto `inventory`
+> `make test-inventory` 
+
+Para rodar os testes de integração `ewallet-integration-test`
+> `make test-integration`
+
+### 1.3 Rodando
+> `make run`
+
+Após executar o comando acima a api estará pronta pra aceitar conexões:
+
+> `curl -H 'Api-Key: c5b6e72c-5b04-4bd2-ba5e-c85a253191dc' http://127.0.0.1:50054/products?userId=11054c65-89dd-46a6-86ab-c603195100a5`
+
+### 1.4 Monitorando
+
+Acesse o [Kibana](http://127.0.0.1:5601/app/apm) para visualizar o Application Performance Monitoring (APM).
+
+### 1.5 Limpando
+
+> `make clean`
+
+## 2. Arquitetura e Design
+
+O sistema foi desenvolvido utilizando micro-serviços com um banco de dados (Postgres) para cada serviço, 
+como será discutido na sessão Decisões.
+
+Cada serviço foi desenvolvido em cima de um [design em camadas](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/), 
+utilizando empacotamento por componente. Além de seguir práticas como o [12factor](https://12factor.net/pt_br/).
+
+
+## 3. Decisões
+
+Antes de começar o desenvolvimento, fiz uma reflexão sobre as restrições do desafio e pensei numa 
 arquitetura em cima delas.
 
 > ## Restrictions

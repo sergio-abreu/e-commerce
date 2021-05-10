@@ -29,7 +29,7 @@ CREATE TABLE users
 );
 
 INSERT INTO users (id, date_of_birth)
-VALUES ('11054c65-89dd-46a6-86ab-c603195100a5', '2000-11-25'),
+VALUES ('11054c65-89dd-46a6-86ab-c603195100a5', CURRENT_DATE),
        ('b6eda5dc-8197-498a-b41b-7841b2b728f9', '1997-01-24'),
        ('512135bd-efe2-44af-afbc-6ddc072a41f6', '1993-11-01'),
        ('a87a888f-d2d8-4697-8777-1bb9ac858507', '1991-10-06');

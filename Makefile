@@ -32,9 +32,9 @@ test-integration: build-images ## Run integration tests
 
 run: ## Run application
 	docker-compose up -d --quiet-pull
-	@echo "\nReady to accept request. Try the following command:\n"
-	@echo "curl -H 'Api-Key: c5b6e72c-5b04-4bd2-ba5e-c85a253191dc' http://127.0.0.1:50054/products?userId=11054c65-89dd-46a6-86ab-c603195100a5"
-	@echo ""
+	@echo "\nReady to accept requests. Try the following command on your terminal:\n"
+	@echo ">: curl -H 'Api-Key: c5b6e72c-5b04-4bd2-ba5e-c85a253191dc' http://127.0.0.1:50054/products?userId=11054c65-89dd-46a6-86ab-c603195100a5"
+	@echo "\nVisit http://127.0.0.1:5601/app/apm for APM visualization\n"
 
 clean: ## Stop all containers
 	cd inventory && docker-compose stop
