@@ -37,7 +37,7 @@ run: ## Run application
 	@echo "\nVisit http://127.0.0.1:5601/app/apm for APM visualization\n"
 
 clean: ## Stop all containers
-	cd inventory && docker-compose stop
-	cd discount && docker-compose stop
-	cd ewallet-integration-test && docker-compose stop
-	docker-compose stop
+	cd inventory && docker-compose down --remove-orphans
+	cd discount && docker-compose down --remove-orphans
+	cd ewallet-integration-test && docker-compose down --remove-orphans
+	docker-compose down --remove-orphans
