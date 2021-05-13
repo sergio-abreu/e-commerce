@@ -1,5 +1,5 @@
-APPLICATION_NAME := $(shell grep "name\": " package.json | sed -E 's/.*:\s*"(.+)",$$/\1/')
-BASE_VERSION := $(shell grep "version\": " package.json | sed -E 's/.*:\s*"(.+)",$$/\1/')
+APPLICATION_NAME := $(shell grep "name\": " package.json | sed -E 's/.*: "(.+)",/\1/')
+BASE_VERSION := $(shell grep "version\": " package.json | sed -E 's/.*: "(.+)",/\1/')
 
 # HELP
 # This will output the help for each task
