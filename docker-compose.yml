@@ -43,8 +43,6 @@ services:
       POSTGRES_DB: inventory
       POSTGRES_USER: inventory
       POSTGRES_PASSWORD: P@ssword
-    volumes:
-      - ./.docker/e-commerce/postgres_inventory/data:/var/lib/postgresql/data
 
   postgres_discount:
     image: postgres:13
@@ -58,8 +56,6 @@ services:
       POSTGRES_DB: discount
       POSTGRES_USER: discount
       POSTGRES_PASSWORD: P@ssword
-    volumes:
-      - ./.docker/e-commerce/postgres_discount/data:/var/lib/postgresql/data
 
   postgres_inventory_migration:
     image: migrate/migrate:v4.14.1
