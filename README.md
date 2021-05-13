@@ -26,7 +26,7 @@ Para rodar os testes de integração `ewallet-integration-test`
 
 Após executar o comando acima a api estará pronta pra aceitar conexões:
 
-> `curl -H 'Api-Key: c5b6e72c-5b04-4bd2-ba5e-c85a253191dc' http://127.0.0.1:50054/products?userId=11054c65-89dd-46a6-86ab-c603195100a5`
+> `curl -H 'Api-Key: c5b6e72c-5b04-4bd2-ba5e-c85a253191dc' 'http://127.0.0.1:50054/products?userId=11054c65-89dd-46a6-86ab-c603195100a5'`
 
 ### 1.4 Monitorando
 
